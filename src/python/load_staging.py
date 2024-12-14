@@ -226,6 +226,10 @@ def load_staging(con, scale):
     COPY staging.finwire FROM '../../staging_area/scale_{scale}/Batch1/FINWIRE2017Q1';
     COPY staging.finwire FROM '../../staging_area/scale_{scale}/Batch1/FINWIRE2017Q2';
     COPY staging.finwire FROM '../../staging_area/scale_{scale}/Batch1/FINWIRE2017Q3';
+    
+    -- Load  trade_joined
+    insert into staging.trade_joined
+    select * from staging.trade t inner join staging.tradehistory th on t.t_id = th.th_t_id;
     '''
     
     con.sql(query)

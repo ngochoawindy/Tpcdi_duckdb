@@ -231,6 +231,6 @@ def load_staging(con, scale):
     con.sql(query)
 
 # test only 
-# scale = 3
-# con = duckdb.connect(f'../../database/sc_{scale}.db')
-# load_staging(con, scale)
+scale = 3
+con = duckdb.connect(f'../../database/sc_{scale}.db')
+load_staging(con, scale)

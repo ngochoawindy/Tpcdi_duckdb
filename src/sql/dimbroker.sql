@@ -1,5 +1,5 @@
 -- dimbroker
---delete from master.dimbroker;
+delete from master.dimbroker;
 insert into master.dimbroker
 	select 
 	row_number() over(order by employeeid) as sk,

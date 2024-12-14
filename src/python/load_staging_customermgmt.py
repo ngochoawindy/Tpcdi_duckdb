@@ -107,7 +107,7 @@ def parse_load_customer_mgmt(con, scale):
     con.sql(query)
     print('Load Customermgmt')
 
-# test 
-# scale = 3
-# con = duckdb.connect(f'../../database/sc_{scale}.db')
-# parse_load_customer_mgmt(con, scale)
+# test
+scale = 3
+con = duckdb.connect(f'../../database/sc_{scale}.db')
+parse_load_customer_mgmt(con, scale)

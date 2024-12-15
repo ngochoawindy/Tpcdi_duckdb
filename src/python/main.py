@@ -8,7 +8,7 @@ from load_staging_customermgmt import parse_load_customer_mgmt
 from process_finwire import process_finwire
 
 parser = argparse.ArgumentParser(description="Data Warehouse Schema for TPC-DI benchmarking")
-parser.add_argument('--scale', '-s', help="Scale factor (3, x, x, x)", required=True, choices=['3', 'x', 'x', 'x'])
+parser.add_argument('--scale', '-s', help="Scale factor (3, 5, 7, 9)", required=True, choices=['3', '5', '7', '9'])
 scale = parser.parse_args().scale
 
 con = duckdb.connect(f'../../database/sc_{scale}.db')
@@ -67,8 +67,8 @@ time_load_datawarehouse_end=time.time()
 time_load['load_datawarehouse']=time_load_datawarehouse_end-time_load_datawarehouse_start
 
 time_load_df=pd.DataFrame(list(time_load.items()), columns=['Load_Type', 'Time'])
-time_load_df.to_csv('../result/time_staging_DW.csv', index=False)
+time_load_df.to_csv('../result/time_staging_DW_'+scale+'.csv', index=False)
 
 
 time_dw_df=pd.DataFrame(list(time_dw.items()), columns=['Function', 'Time'])
-time_dw_df.to_csv('../result/time_DW.csv', index=False)
+time_dw_df.to_csv('../result/time_DW_'+scale+'.csv', index=False)

@@ -2,7 +2,7 @@ import duckdb
 import argparse
 
 parser = argparse.ArgumentParser(description="Set up the DuckDB database - Staging Schema for TPC-DI benchmarking")
-parser.add_argument('--scale', '-s', help="Scale factor (3, x, x, x)", required=True, choices=['3', '4', '5', '6'])
+parser.add_argument('--scale', '-s', help="Scale factor (3, 5, 7, 9)", required=True, choices=['3', '5', '7', '9'])
 scale = parser.parse_args().scale
 
 con = duckdb.connect(f'../../database/sc_{scale}.db')

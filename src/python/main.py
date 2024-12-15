@@ -1,6 +1,11 @@
+import time
+import pandas as pd
 import duckdb
 import argparse
 from test_file import *
+from load_staging import load_staging
+from load_staging_customermgmt import parse_load_customer_mgmt
+from process_finwire import process_finwire
 
 parser = argparse.ArgumentParser(description="Data Warehouse Schema for TPC-DI benchmarking")
 parser.add_argument('--scale', '-s', help="Scale factor (3, x, x, x)", required=True, choices=['3', 'x', 'x', 'x'])
@@ -8,34 +13,62 @@ scale = parser.parse_args().scale
 
 con = duckdb.connect(f'../../database/sc_{scale}.db')
 
-test_functions = [
-    test_TransformTradeType,
-    test_TransformStatusType,
-    test_TransformTaxRate,
-    test_TransformIndustry,
-    test_TransformDimDate,
-    test_TransformDimTime,
-    test_TransformDimCompany,
-    test_TransformDimBroker,
-    test_TransformProspect,
-    test_TransformDimCustomer,
-    test_TransformDimAccount,
-    test_TransformDimSecurity,
-    test_TransformDimTrade,
-    test_TransformFinancial,
-    test_TransformFactCashBalances,
-    test_TransformFactHoldings,
-    test_TransformFactWatches,
-    test_TransformFactMarketHistory
+
+time_load={}
+print('start loading staging')
+time_load_staging_start=time.time()
+load_staging(con, scale)
+print('start process finwire')
+process_finwire(con)
+print('start parse load customer')
+parse_load_customer_mgmt(con, scale)
+time_load_staging_end=time.time()
+time_load['load_staging']=time_load_staging_end-time_load_staging_start
+print('end loading staging')
+print('start load datawarehouse')
+
+run_functions = [
+    run_TransformTradeType,
+    run_TransformStatusType,
+    run_TransformTaxRate,
+    run_TransformIndustry,
+    run_TransformDimDate,
+    run_TransformDimTime,
+    run_TransformDimCompany,
+    run_TransformDimBroker,
+    run_TransformProspect,
+    run_TransformDimCustomer,
+    run_TransformDimAccount,
+    run_TransformDimSecurity,
+    run_TransformDimTrade,
+    run_TransformFinancial,
+    run_TransformFactCashBalances,
+    run_TransformFactHoldings,
+    run_TransformFactWatches,
+    run_TransformFactMarketHistory
 ]
 
-time_all={}
-# Run all tests
-for test_func in test_functions:
-    time_func = test_func(con)
-    time_all.update(time_func)
-    print(f'{test_func.__name__}', time_func)
+# time_all={}
+# # Run all tests
+# for test_func in test_functions:
+#     time_func = test_func(con)
+#     time_all.update(time_func)
+#     print(f'{test_func.__name__}', time_func)
+#
+# import pandas as pd
+# time_df=pd.DataFrame(list(time_all.items()), columns=['Function', 'Time'])
+# time_df.to_csv('../result/time_df.csv', index=False)
+time_dw={}
+time_load_datawarehouse_start=time.time()
+for run_func in run_functions:
+    time_func=run_func(con)
+    time_dw.update(time_func)
+time_load_datawarehouse_end=time.time()
+time_load['load_datawarehouse']=time_load_datawarehouse_end-time_load_datawarehouse_start
 
-import pandas as pd
-time_df=pd.DataFrame(list(time_all.items()), columns=['Function', 'Time'])
-time_df.to_csv('../result/time_df.csv', index=False)
+time_load_df=pd.DataFrame(list(time_load.items()), columns=['Load_Type', 'Time'])
+time_load_df.to_csv('../result/time_staging_DW.csv', index=False)
+
+
+time_dw_df=pd.DataFrame(list(time_dw.items()), columns=['Function', 'Time'])
+time_dw_df.to_csv('../result/time_DW.csv', index=False)

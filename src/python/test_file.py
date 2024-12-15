@@ -3,7 +3,7 @@ import time
 from tranform import *
 
 
-def test_TransformTradeType(con):
+def run_TransformTradeType(con):
     sql_trade_type = '../sql/load_tradetype.sql'
     transform = TransformTradeType(con, sql_trade_type)
     res = {}
@@ -14,7 +14,7 @@ def test_TransformTradeType(con):
     return res
 
 
-def test_TransformStatusType(con):
+def run_TransformStatusType(con):
     sql_status_type = '../sql/statustype.sql'
     transform = TransformStatusType(con, sql_status_type)
     res = {}
@@ -25,7 +25,7 @@ def test_TransformStatusType(con):
     return res
 
 
-def test_TransformTaxRate(con):
+def run_TransformTaxRate(con):
     sql_tax_rate = '../sql/taxrate.sql'
     transform = TransformTaxRate(con, sql_tax_rate)
     res = {}
@@ -36,7 +36,7 @@ def test_TransformTaxRate(con):
     return res
 
 
-def test_TransformIndustry(con):
+def run_TransformIndustry(con):
     sql_industry = '../sql/industry.sql'
     transform = TransformIndustry(con, sql_industry)
     res = {}
@@ -47,7 +47,7 @@ def test_TransformIndustry(con):
     return res
 
 
-def test_TransformDimDate(con):
+def run_TransformDimDate(con):
     sql_dimdate = '../sql/dimdate.sql'
     transform = TransformDimDate(con, sql_dimdate)
     res = {}
@@ -58,7 +58,7 @@ def test_TransformDimDate(con):
     return res
 
 
-def test_TransformDimTime(con):
+def run_TransformDimTime(con):
     sql_dimtime = '../sql/dimtime.sql'
     transform = TransformDimTime(con, sql_dimtime)
     res = {}
@@ -69,7 +69,7 @@ def test_TransformDimTime(con):
     return res
 
 
-def test_TransformDimCompany(con):
+def run_TransformDimCompany(con):
     sql_dimcompany = '../sql/dimcompany.sql'
     sql_dimmessage_dimcompany = '../sql/dimcompany_dimessages.sql'
     transform = TransformDimCompany(con, sql_dimcompany, sql_dimmessage_dimcompany)
@@ -86,7 +86,7 @@ def test_TransformDimCompany(con):
     return res
 
 
-def test_TransformDimBroker(con):
+def run_TransformDimBroker(con):
     sql_dimbroker = '../sql/dimbroker.sql'
     transform = TransformDimBroker(con, sql_dimbroker)
     res = {}
@@ -97,7 +97,7 @@ def test_TransformDimBroker(con):
     return res
 
 
-def test_TransformProspect(con):
+def run_TransformProspect(con):
     sql_prospect = '../sql/prospect.sql'
     transform = TransformProspect(con, sql_prospect, None)
     res = {}
@@ -108,7 +108,7 @@ def test_TransformProspect(con):
     return res
 
 
-def test_TransformDimCustomer(con):
+def run_TransformDimCustomer(con):
     sql_dim_customer = '../sql/dimcustomer.sql'
     sql_dim_customer_message = '../sql/dimcustomer_dimmessage.sql'
     transform = TransformDimCustomer(con, sql_dim_customer, sql_dim_customer_message)
@@ -132,7 +132,7 @@ def test_TransformDimCustomer(con):
     return res
 
 
-def test_TransformDimAccount(con):
+def run_TransformDimAccount(con):
     sql_dimaccount = '../sql/dimaccount.sql'
     transform = TransformDimAccount(con, sql_dimaccount)
     res = {}
@@ -143,7 +143,7 @@ def test_TransformDimAccount(con):
     return res
 
 
-def test_TransformDimSecurity(con):
+def run_TransformDimSecurity(con):
     sql_dimsecurity = '../sql/dimsecurity.sql'
     transform = TransformDimSecurity(con, sql_dimsecurity)
     res = {}
@@ -154,7 +154,7 @@ def test_TransformDimSecurity(con):
     return res
 
 
-def test_TransformDimTrade(con):
+def run_TransformDimTrade(con):
     sql_trade_joined = '../sql/trade_joined.sql'
     sql_dimtrade = '../sql/dimtrade.sql'
     sql_dimtrade_message = '../sql/dimessages_dimtrade.sql'
@@ -175,7 +175,7 @@ def test_TransformDimTrade(con):
     return res
 
 
-def test_TransformFinancial(con):
+def run_TransformFinancial(con):
     sql_financial = '../sql/financial.sql'
     transform = TransformFinancial(con, sql_financial)
     res = {}
@@ -186,7 +186,7 @@ def test_TransformFinancial(con):
     return res
 
 
-def test_TransformFactCashBalances(con):
+def run_TransformFactCashBalances(con):
     sql_fact_cash_balances = '../sql/fact_cash_balances.sql'
     transform = TransformFactCashBalances(con, sql_fact_cash_balances)
     res = {}
@@ -197,7 +197,7 @@ def test_TransformFactCashBalances(con):
     return res
 
 
-def test_TransformFactHoldings(con):
+def run_TransformFactHoldings(con):
     sql_fact_holdings = '../sql/factholdings.sql'
     transform = TransformFactHoldings(con, sql_fact_holdings)
     res = {}
@@ -208,7 +208,7 @@ def test_TransformFactHoldings(con):
     return res
 
 
-def test_TransformFactWatches(con):
+def run_TransformFactWatches(con):
     sql_fact_watches = '../sql/factwatches.sql'
     transform = TransformFactWatches(con, sql_fact_watches)
     res = {}
@@ -219,7 +219,7 @@ def test_TransformFactWatches(con):
     return res
 
 
-def test_TransformFactMarketHistory(con):
+def run_TransformFactMarketHistory(con):
     sql_fact_market_history = '../sql/factmarkethistory.sql'
     sql_fact_market_history_message = '../sql/factmarkethistory_dimessages.sql'
     transform = TransformFactMarketHistory(con, sql_fact_market_history, sql_fact_market_history_message)
@@ -236,30 +236,30 @@ def test_TransformFactMarketHistory(con):
     return res
 
 
-if __name__ == '__main__':
-    con = duckdb.connect('../../database/sc_3.db')
-    # List of all test functions
-    test_functions =[
-        test_TransformTradeType,
-        test_TransformStatusType,
-        test_TransformTaxRate,
-        test_TransformIndustry,
-        test_TransformDimDate,
-        test_TransformDimTime,
-        test_TransformDimCompany,
-        test_TransformDimBroker,
-        test_TransformProspect,
-        test_TransformDimCustomer,
-        test_TransformDimAccount,
-        test_TransformDimSecurity,
-        test_TransformDimTrade,
-        test_TransformFinancial,
-        test_TransformFactCashBalances,
-        test_TransformFactHoldings,
-        test_TransformFactWatches,
-        test_TransformFactMarketHistory
-    ]
+# if __name__ == '__main__':
+#     con = duckdb.connect('../../database/sc_3.db')
+#     # List of all test functions
+#     test_functions =[
+#         run_TransformTradeType,
+#         run_TransformStatusType,
+#         run_TransformTaxRate,
+#         run_TransformIndustry,
+#         run_TransformDimDate,
+#         run_TransformDimTime,
+#         run_TransformDimCompany,
+#         run_TransformDimBroker,
+#         run_TransformProspect,
+#         run_TransformDimCustomer,
+#         run_TransformDimAccount,
+#         run_TransformDimSecurity,
+#         run_TransformDimTrade,
+#         run_TransformFinancial,
+#         run_TransformFactCashBalances,
+#         run_TransformFactHoldings,
+#         run_TransformFactWatches,
+#         run_TransformFactMarketHistory
+#     ]
 
-    # Run all tests
-    for test_func in test_functions:
-        print(f'{test_func.__name__}', test_func(con))
+#     # Run all tests
+#     for test_func in test_functions:
+#         print(f'{test_func.__name__}', test_func(con))

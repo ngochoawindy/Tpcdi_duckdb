@@ -153,7 +153,3 @@ def process_finwire(con):
     
     finally:
         cursor.close()
-
-scale = 3
-con = duckdb.connect(f'../../database/sc_{scale}.db')
-process_finwire(con)

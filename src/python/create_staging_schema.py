@@ -8,6 +8,7 @@ scale = parser.parse_args().scale
 con = duckdb.connect(f'../../database/sc_{scale}.db')
 
 query = '''
+-- For Historical Load
 drop schema if exists staging cascade;
 CREATE SCHEMA staging;
 
@@ -322,6 +323,108 @@ CREATE TABLE staging.trade_joined(
 	th_dts DATETIME NOT NULL,
 	th_st_id CHAR(4) NOT NULL,
 	PRIMARY KEY(t_id, th_st_id)
+);
+
+-- For Incremental Update 
+drop table if exists staging.customer;
+CREATE TABLE staging.customer (
+        cdc_flag CHAR(1) NOT NULL,
+        cdc_dsn BIGINT NOT NULL,
+        c_id INT NOT NULL,
+        c_tax_id CHAR(20) NOT NULL,
+        c_st_id CHAR(4),
+        c_l_name CHAR(25) NOT NULL,
+        c_f_name CHAR(20) NOT NULL,
+        c_m_name CHAR(1),
+        c_gndr CHAR(1),
+        c_tier NUMERIC(1),
+        c_dob DATE NOT NULL,
+        c_adline1 CHAR(80) NOT NULL,
+        c_adline2 CHAR(80),
+        c_zipcode CHAR(12) NOT NULL,
+        c_city CHAR(25) NOT NULL,
+        c_state_prov CHAR(20) NOT NULL,
+        c_ctry CHAR(24),
+        c_ctry_1 CHAR(3),
+        c_area_1 CHAR(3),
+        c_local_1 CHAR(10),
+        c_ext_1 CHAR(5),
+        c_ctry_2 CHAR(3),
+        c_area_2 CHAR(3),
+        c_local_2 CHAR(10),
+        c_ext_2 CHAR(5),
+        c_ctry_3 CHAR(3),
+        c_area_3 CHAR(3),
+        c_local_3 CHAR(10),
+        c_ext_3 CHAR(5),
+        c_email_1 CHAR(50),
+        c_email_2 CHAR(50),
+        c_lcl_tx_id CHAR(4) NOT NULL,
+        c_nat_tx_id CHAR(4) NOT NULL
+    );
+    
+drop table if exists staging.account;
+CREATE TABLE staging.account (
+    cdc_flag CHAR(1) CHECK (cdc_flag IN ('I', 'U')) NOT NULL, 
+    cdc_dsn BIGINT NOT NULL,                                  
+    ca_id BIGINT NOT NULL,                                  
+    ca_b_id BIGINT NOT NULL,                                  
+    ca_c_id BIGINT NOT NULL,                                  
+    ca_name CHAR(50),                                         
+    ca_tax_st NUMERIC(1) CHECK (ca_tax_st IN (0, 1, 2)),      
+    ca_st_id CHAR(4) CHECK (ca_st_id IN ('ACTV', 'INAC'))     
+);
+
+drop table if exists staging.trade1 ;
+create table staging.trade1 (
+    cdc_flag   text check (cdc_flag in ('I', 'U')),               
+    cdc_dsn    bigint not null,                                   
+    t_id       numeric(15) not null check(t_id >= 0),
+    t_dts      timestamp not null,                                
+    t_st_id    char(4) not null,                                  
+    t_tt_id    char(3) not null,                                  
+    t_is_cash  integer check(t_is_cash in (0, 1)),
+    t_s_symb   char(15) not null,                                 
+    t_qty      numeric(6) check(t_qty >= 0),
+    t_bid_price numeric(8,2) check(t_bid_price >= 0),
+    t_ca_id    numeric(11) not null check(t_ca_id >= 0),
+    t_exec_name char(49) not null,                                
+    t_trade_price numeric(8,2) check((t_st_id = 'CMPT' and t_trade_price >= 0) or (t_st_id != 'CMPT' and t_trade_price is null)),
+    t_chrg numeric(10,2) check((t_st_id = 'CMPT' and t_chrg >= 0) or (t_st_id != 'CMPT' and t_chrg is null)),
+	t_comm numeric(10,2) check((t_st_id = 'CMPT' and t_comm >= 0) or (t_st_id != 'CMPT' and t_comm is null)),
+	t_tax numeric(10,2) check((t_st_id = 'CMPT' and t_tax >= 0) or (t_st_id != 'CMPT' and t_tax is null))
+);
+
+drop table if exists staging.cashtransaction1;
+create table staging.cashtransaction1(
+    cdc_flag varchar(1) not null,          
+    cdc_dsn bigint not null, 
+	ct_ca_id numeric(11) not null check(ct_ca_id >= 0),
+	ct_dts timestamp not null,
+	ct_amt numeric(10, 2) not null,
+	ct_name char(100) not null
+);
+
+drop table if exists staging.dailymarket1;
+create table staging.dailymarket1(
+    cdc_flag varchar(1) not null,          
+    cdc_dsn bigint not null, 
+	dm_date date not null,
+	dm_s_symb char(15) not null,
+	dm_close numeric(8, 2) not null,
+	dm_high numeric(8, 2) not null,
+	dm_low numeric(8, 2) not null,
+	dm_vol numeric(12) not null check(dm_vol >= 0)
+);
+
+drop table if exists staging.watchhistory1;
+create table staging.watchhistory1(
+    cdc_flag varchar(1) not null,          
+    cdc_dsn bigint not null, 
+	w_c_id numeric(11) not null check(w_c_id >= 0),
+	w_s_symb char(15) not null,
+	w_dts timestamp not null,
+	w_action char(4) check(w_action in ('ACTV', 'CNCL'))	
 );
 '''
 print(f'Creating Staging Schema for scale factor {scale}')

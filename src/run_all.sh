@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default scale value
-scale=1
+scale=3
 
 # Parse command line arguments
 for arg in "$@"
@@ -14,15 +14,32 @@ do
     esac
 done
 
-echo $scale
+echo "Scale: $scale"
 
 cd python
 
-echo 'create_staging_schema'
-python create_staging_schema.py --scale $scale
-echo 'create_dw_schema.py'
-python create_dw_schema.py --scale $scale
-echo 'main.py'
-python main.py --scale $scale
+# Run create staging and DW schemas
+echo 'Creating staging schema...'
+python3 create_staging_schema.py --scale $scale
 
+echo 'Creating data warehouse schema...'
+python3 create_dw_schema.py --scale $scale
 
+# HISTORICAL PROCESS
+cd historical
+
+# Run the main historical script
+echo 'Running historical main process...'
+python3 main_historical.py --scale $scale
+echo "Historical Load completed for scale $scale."
+# INCREMENTAL PROCESS
+cd ../incremental
+
+# Run the main incremental script
+echo 'Running incremental update 1 main process...'
+python3 main_incremental.py --scale $scale --phase 1
+echo "Incremental Update Phase 1 completed for scale $scale"
+
+echo 'Running incremental update 2 main process...'
+python3 main_incremental.py --scale $scale --phase 2
+echo "Incremental Update Phase 1 completed for scale $scale"

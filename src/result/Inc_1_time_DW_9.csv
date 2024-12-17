@@ -1,0 +1,8 @@
+Function,Time
+transform_load_master_prospect,1.7381808757781982
+transform_load_master_dimcustomer,0.1586902141571045
+transform_load_master_dimaccount,0.04661417007446289
+transform_load_master_dimtrade,2.914470672607422
+transform_load_fact_cash_balances,0.02437901496887207
+transform_load_fact_market_history,0.1641063690185547
+transform_load_fact_watches,0.010155677795410156

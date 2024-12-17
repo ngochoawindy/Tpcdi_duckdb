@@ -1,3 +1,3 @@
 Load_Type,Time
-load_staging_incremental,0.7922682762145996
-load_datawarehouse,2.7356438636779785
+load_staging_incremental,0.41972851753234863
+load_datawarehouse,1.3609673976898193

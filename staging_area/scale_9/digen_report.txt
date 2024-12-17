@@ -1,0 +1,15 @@
+TPC-DI Data Generation Report
+=============================
+
+Start Time: 2024-12-15T14:14:42+0100
+End Time: 2024-12-15T14:15:32+0100
+DIGen Version: 1.1.0
+Scale Factor: 9
+AuditTotalRecordsSummaryWriter - TotalRecords for Batch1: 14338913
+AuditTotalRecordsSummaryWriter - TotalRecords for Batch2: 60698
+AuditTotalRecordsSummaryWriter - TotalRecords for Batch3: 60685
+AuditTotalRecordsSummaryWriter - TotalRecords all Batches: 14460296 322292.46 records/second
+
+Command options used: -o ../generated_data/scale_9 -sf 9 
+PDGF Version: PDGF v2.5_#1343_b4177
+Java version: Private Build 1.8.0_432
